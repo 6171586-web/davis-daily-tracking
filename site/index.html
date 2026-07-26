@@ -603,12 +603,16 @@
         context.font = '10px Arial, "PingFang SC", sans-serif';
         context.textAlign = "center";
         points.forEach((point, index) => {
-          const labelX = Math.max(pad.left + 24, Math.min(x(index), width - pad.right - 24));
+          const labelX = x(index);
           const fundY = y(fund[index]);
           const labelAbove = point.inferredAnchor || fund[index] >= total[index];
+          const isLast = index === points.length - 1;
           const labelY = labelAbove
-            ? Math.max(14, fundY - 14 - index % 2 * 2)
-            : Math.min(height - pad.bottom - 6, fundY + 21 + index % 2 * 2);
+            ? Math.max(14, fundY - (isLast ? 23 : 14) - index % 2 * 2)
+            : Math.min(
+                height - pad.bottom - 6,
+                fundY + (isLast ? 29 : 21) + index % 2 * 2
+              );
           context.fillStyle = "#b9f5eb";
           context.fillText(point.inferredAnchor ? "0%起点*" : point.nav.toFixed(4), labelX, labelY);
           context.fillStyle = "#8da0af";

@@ -1,6 +1,7 @@
 {
   "startDate": "2026-06-30",
   "indexBaseDate": "2026-06-29",
+  "lastSuccessfulCheckDate": null,
   "fundBaseNav": 1.0009620009620008,
   "priceBase": 5120.71,
   "totalReturnBase": 10943.04,

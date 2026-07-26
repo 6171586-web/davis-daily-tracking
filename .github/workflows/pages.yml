@@ -5,7 +5,7 @@ on:
     branches: ["main"]
   workflow_dispatch:
   schedule:
-    - cron: "30 12,15 * * 1-5"
+    - cron: "0 3-15 * * 1-5"
 
 permissions:
   contents: write
@@ -25,23 +25,32 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Check whether today's update is complete
+        if: github.event_name == 'schedule'
+        id: update-gate
+        run: |
+          if node scripts/should-update.mjs; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          fi
       - name: Prepare automatic update
-        if: github.event_name != 'push'
+        if: github.event_name != 'push' && (github.event_name != 'schedule' || steps.update-gate.outputs.run == 'true')
         uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
       - name: Install update service
-        if: github.event_name != 'push'
+        if: github.event_name != 'push' && (github.event_name != 'schedule' || steps.update-gate.outputs.run == 'true')
         run: npm ci
       - name: Read mailbox and refresh market data
-        if: github.event_name != 'push'
+        if: github.event_name != 'push' && (github.event_name != 'schedule' || steps.update-gate.outputs.run == 'true')
         run: npm run update
         env:
           QQ_EMAIL: ${{ secrets.QQ_EMAIL }}
           QQ_AUTH_CODE: ${{ secrets.QQ_AUTH_CODE }}
       - name: Save refreshed data
-        if: github.event_name != 'push'
+        if: github.event_name != 'push' && (github.event_name != 'schedule' || steps.update-gate.outputs.run == 'true')
         run: |
           if git diff --quiet -- data/state.json site/data.js; then
             echo "No new published data"
@@ -53,13 +62,16 @@ jobs:
           git commit -m "Update daily performance data"
           git push
       - name: Configure Pages
+        if: github.event_name != 'schedule' || steps.update-gate.outputs.run == 'true'
         uses: actions/configure-pages@v5
         with:
           enablement: true
       - name: Upload site
+        if: github.event_name != 'schedule' || steps.update-gate.outputs.run == 'true'
         uses: actions/upload-pages-artifact@v4
         with:
           path: site
       - name: Deploy
+        if: github.event_name != 'schedule' || steps.update-gate.outputs.run == 'true'
         id: deployment
         uses: actions/deploy-pages@v4

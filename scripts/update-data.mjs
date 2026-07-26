@@ -243,6 +243,7 @@ function buildSiteData(state) {
 async function main() {
   const state = await readJson(STATE_PATH);
   const today = shanghaiToday();
+  const previousPublishedDate = buildSiteData(state).updatedAt;
   const [mailNavs, priceIndex, totalReturnIndex] = await Promise.all([
     fetchFundNavs(),
     fetchOfficialIndex("000922", state.indexBaseDate, today),
@@ -258,6 +259,13 @@ async function main() {
   state.totalReturnIndex = { ...state.totalReturnIndex, ...totalReturnIndex };
 
   const siteData = buildSiteData(state);
+  const latestMailboxDate = Object.keys(mailNavs).sort().at(-1);
+  if (
+    siteData.updatedAt > previousPublishedDate &&
+    latestMailboxDate === siteData.updatedAt
+  ) {
+    state.lastSuccessfulCheckDate = today;
+  }
   const stateText = `${JSON.stringify(state, null, 2)}\n`;
   const siteText = `window.DAVIS_DATA = ${JSON.stringify(siteData, null, 2)};\n`;
   await fs.writeFile(STATE_PATH, stateText);
@@ -265,6 +273,11 @@ async function main() {
 
   console.log(`Mailbox valuation dates parsed: ${Object.keys(mailNavs).length}`);
   console.log(`Dashboard published through: ${siteData.updatedAt}`);
+  console.log(
+    state.lastSuccessfulCheckDate === today
+      ? "Today's update is complete; later scheduled checks will be skipped"
+      : "No new complete valuation yet; the next hourly check remains enabled"
+  );
 }
 
 await main();
