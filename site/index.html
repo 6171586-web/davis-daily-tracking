@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="Davis每日跟踪：红利指增2号与中证红利指数收益对比">
+  <meta property="og:title" content="Davis每日跟踪">
+  <meta property="og:description" content="红利指增2号与中证红利指数收益、超额收益跟踪">
+  <meta property="og:image" content="https://6171586-web.github.io/davis-daily-tracking/og.png">
+  <title>Davis每日跟踪</title>
+  <style>
+    :root {
+      --ink: #f7ead2;
+      --paper: #061324;
+      --card: #0a1d31;
+      --teal: #55d0c5;
+      --orange: #e6ae67;
+      --line: #234058;
+      --muted: #8da0af;
+      --red: #ff8f8f;
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--paper); }
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: radial-gradient(circle at 28% -10%, #173b56, transparent 42%), var(--paper);
+      color: var(--ink);
+      font-family: Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    button { font: inherit; }
+    main { max-width: 1180px; margin: auto; padding: 50px 28px 34px; }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 24px;
+      margin-bottom: 25px;
+    }
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font: 11px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+      letter-spacing: .11em;
+    }
+    h1 {
+      margin: 0;
+      font: 700 48px/1.06 Georgia, "Songti SC", serif;
+      letter-spacing: -.05em;
+    }
+    h2 { margin: 0; font-size: 21px; letter-spacing: -.035em; }
+    .sub { margin: 11px 0 0; color: var(--muted); }
+    .method-strip {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 16px;
+      padding: 9px 12px;
+      border: 1px solid #2f566d;
+      border-radius: 8px;
+      color: #b9c9d5;
+      background: rgba(8, 29, 47, .72);
+      font-size: 11px;
+    }
+    .method-strip b { color: var(--orange); }
+    .method-strip i { width: 3px; height: 3px; border-radius: 50%; background: #547084; }
+    .header-actions { display: flex; gap: 10px; align-items: center; }
+    #export-button {
+      border: 1px solid #a77742;
+      border-radius: 999px;
+      padding: 11px 16px;
+      background: #10283e;
+      color: var(--ink);
+      font-weight: 700;
+      cursor: pointer;
+    }
+    #export-button:hover, #export-button:focus-visible { background: #17354e; outline: none; }
+    #export-button:disabled { cursor: wait; opacity: .7; }
+    .badge {
+      border: 1px solid #a77742;
+      border-radius: 999px;
+      padding: 10px 17px;
+      text-align: center;
+      font-size: 11px;
+      line-height: 1.35;
+      background: #071525;
+      white-space: nowrap;
+    }
+    .badge strong { font-size: 17px; letter-spacing: .1em; }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .metrics article, .panel {
+      background: linear-gradient(145deg, rgba(14,38,59,.96), rgba(6,21,37,.96));
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: 0 16px 35px rgba(0,0,0,.13);
+    }
+    .metrics article { padding: 17px; }
+    .metrics article.primary-metric {
+      border-color: #6d4b3b;
+      background: linear-gradient(145deg, rgba(39,37,46,.96), rgba(15,27,40,.96));
+    }
+    .metrics span { display: block; color: var(--muted); font-size: 13px; }
+    .metrics strong {
+      display: block;
+      margin: 9px 0 3px;
+      font-size: 27px;
+      letter-spacing: -.04em;
+    }
+    .metrics small { color: var(--muted); font-size: 11px; }
+    .teal, .positive { color: var(--teal); }
+    .orange { color: var(--orange); }
+    .negative { color: var(--red); }
+    .panel { padding: 22px; }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 2.05fr) minmax(280px, .95fr);
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .chart-panel { min-width: 0; }
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+    .chart-note { margin: 7px 0 0; color: var(--muted); font-size: 12px; }
+    .legend {
+      display: flex;
+      gap: 7px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .legend i { width: 18px; height: 2px; display: inline-block; margin-left: 9px; }
+    .legend .fund { background: var(--teal); }
+    .legend .index { background: var(--orange); }
+    .trend { width: 100%; height: 390px; display: block; }
+    .reconcile-card {
+      border-color: #344c60;
+      background: linear-gradient(160deg, rgba(19,37,53,.96), rgba(7,21,35,.96));
+    }
+    .reconcile-title { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .status {
+      border: 1px solid #42687c;
+      border-radius: 999px;
+      padding: 5px 8px;
+      background: #102b3d;
+      color: #a8c1cf;
+      font-size: 10px;
+      white-space: nowrap;
+    }
+    .muted-copy { margin: 13px 0 16px; color: var(--muted); font-size: 12px; line-height: 1.65; }
+    .checkpoint { border-top: 1px solid var(--line); padding-top: 14px; }
+    .checkpoint > span, .weekly-check > span {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+    .checkpoint dl { margin: 0; }
+    .checkpoint dl > div {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin: 9px 0;
+    }
+    .checkpoint dt { color: #9caeba; font-size: 12px; }
+    .checkpoint dd { margin: 0; font-size: 14px; font-weight: 700; text-align: right; }
+    .checkpoint.current {
+      margin-top: 15px;
+      border: 1px solid #2c475a;
+      border-radius: 9px;
+      padding: 12px;
+      background: rgba(15,39,56,.7);
+    }
+    .checkpoint.current span {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+    .checkpoint.current strong { font-size: 20px; }
+    .weekly-check {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px 12px;
+      margin-top: 15px;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+      font-size: 12px;
+    }
+    .weekly-check span, .weekly-check strong { grid-column: 1 / -1; }
+    .weekly-check b { color: #bdcad3; font-weight: 500; }
+    .weekly-check strong { color: var(--red); font-size: 15px; }
+    .split {
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .difference-row {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr 1.1fr;
+      gap: 12px;
+      align-items: center;
+      margin: 18px 0 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 15px 0;
+    }
+    .difference-row span { display: block; margin-bottom: 4px; color: var(--muted); font-size: 11px; }
+    .difference-row b { font-size: 18px; }
+    .operator { color: #647c8e; }
+    .difference {
+      border-left: 1px solid var(--line);
+      padding-left: 13px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+    .difference strong { display: block; margin-top: 4px; color: var(--orange); font-size: 15px; }
+    .fine { margin: 13px 0 0; color: var(--muted); font-size: 12px; line-height: 1.65; }
+    .method p:not(.eyebrow) { margin: 13px 0; color: #c5d0d7; font-size: 13px; line-height: 1.65; }
+    .method b { color: var(--ink); }
+    .table-panel { padding-bottom: 8px; }
+    .table-heading { align-items: center; }
+    .table-controls {
+      display: flex;
+      gap: 4px;
+      padding: 3px;
+      border: 1px solid #29485e;
+      border-radius: 999px;
+      background: #071827;
+    }
+    .table-controls button {
+      border: 0;
+      border-radius: 999px;
+      padding: 7px 12px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .table-controls button.active { background: #17374d; color: var(--ink); }
+    .table-controls button:focus-visible { outline: 2px solid var(--teal); outline-offset: 1px; }
+    .table-context { margin: 0 0 12px; color: var(--muted); font-size: 11px; }
+    .table-wrap { overflow: auto; margin: 0 -22px; }
+    table { width: 100%; min-width: 990px; border-collapse: collapse; font-size: 13px; }
+    th {
+      border-top: 1px solid var(--line);
+      padding: 12px 18px;
+      color: var(--muted);
+      font-weight: 500;
+      text-align: right;
+      white-space: nowrap;
+    }
+    td {
+      border-top: 1px solid #17334a;
+      padding: 12px 18px;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+      white-space: nowrap;
+    }
+    th:first-child, td:first-child { text-align: left; }
+    .baseline-row { background: #10283e; color: #f5d69a; font-weight: 700; }
+    .table-note { margin: 11px 0 0; color: #788b99; font-size: 11px; line-height: 1.65; }
+    footer { margin-top: 22px; color: #71818e; font-size: 11px; text-align: center; }
+    @media (max-width: 900px) {
+      .hero-grid, .split { grid-template-columns: 1fr; }
+      .trend { height: 340px; }
+    }
+    @media (max-width: 800px) {
+      main { padding: 32px 16px; }
+      header { margin-bottom: 22px; }
+      h1 { font-size: 38px; }
+      .metrics { grid-template-columns: repeat(2, 1fr); }
+      .panel { padding: 17px; }
+      .table-wrap { margin: 0 -17px; }
+      .difference-row { grid-template-columns: 1fr auto 1fr; }
+      .difference {
+        grid-column: 1 / -1;
+        border-top: 1px solid var(--line);
+        border-left: 0;
+        padding: 10px 0 0;
+      }
+    }
+    @media (max-width: 540px) {
+      header, .panel-head { align-items: flex-start; flex-direction: column; }
+      .header-actions { width: 100%; justify-content: space-between; }
+      .metrics { grid-template-columns: 1fr 1fr; }
+      .metrics strong { font-size: 23px; }
+      .badge { display: none; }
+      .method-strip i { display: none; }
+      .legend { white-space: normal; }
+      .trend { height: 310px; }
+    }
+  </style>
+</head>
+<body>
+  <main id="dashboard">
+    <header>
+      <div>
+        <p class="eyebrow">PRIVATE PERFORMANCE NOTE · 2026.07.23</p>
+        <h1>Davis每日跟踪</h1>
+        <p class="sub">红利指增2号 · 从2026年6月30日期初统一归零</p>
+        <div class="method-strip">
+          <b>经济评价口径</b>
+          <span>H00922 中证红利全收益</span><i></i>
+          <span>6/29收盘 = 6/30期初</span><i></i>
+          <span>指数收益与超额收益</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="export-button" type="button">导出一图流</button>
+        <div class="badge">净值更新至<br><strong>07 · 23</strong></div>
+      </div>
+    </header>
+
+    <section class="metrics" aria-label="经济评价核心指标">
+      <article><span>产品累计收益</span><strong class="teal" id="fund-cumulative"></strong><small>按7/17披露锚点推导</small></article>
+      <article><span>指数收益</span><strong class="orange" id="index-cumulative"></strong><small>H00922 · 包含分红再投资</small></article>
+      <article class="primary-metric"><span>超额收益</span><strong id="excess-cumulative"></strong><small>产品收益 − 指数收益</small></article>
+      <article><span>最新单日超额收益</span><strong id="latest-excess"></strong><small>07/23 · 产品日收益 − 指数日收益</small></article>
+    </section>
+
+    <section class="hero-grid">
+      <div class="panel chart-panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">ECONOMIC VIEW · BASELINE = 0%</p>
+            <h2>产品收益与指数收益</h2>
+            <p class="chart-note">两条曲线从同一0%起点延伸；青绿色点标注每个已取得的基金单位净值。</p>
+          </div>
+          <div class="legend"><i class="fund"></i>产品<i class="index"></i>H00922全收益</div>
+        </div>
+        <canvas id="trend-chart" class="trend" aria-label="基金收益与中证红利指数收益曲线"></canvas>
+      </div>
+
+      <aside class="panel reconcile-card">
+        <div class="reconcile-title">
+          <div><p class="eyebrow">COMMUNICATION CHECK</p><h2>沟通对账口径</h2></div>
+          <span class="status">数字已复现</span>
+        </div>
+        <p class="muted-copy">采用000922价格指数，仅用于还原管理人披露；是否为合同约定口径仍待确认。</p>
+        <div class="checkpoint">
+          <span>截至07/17</span>
+          <dl>
+            <div><dt>产品累计</dt><dd class="teal">+3.95%</dd></div>
+            <div><dt>价格指数累计</dt><dd>+3.15%</dd></div>
+            <div><dt>超额收益</dt><dd class="teal">+0.80%</dd></div>
+          </dl>
+        </div>
+        <div class="checkpoint current">
+          <span>截至07/23 · 同口径更新</span>
+          <strong id="reconcile-cumulative"></strong>
+        </div>
+        <div class="weekly-check">
+          <span>07/10 → 07/17 周报核验</span>
+          <b>产品 +0.22%</b><b>价格指数 +1.88%</b>
+          <strong>超额收益 -1.66%</strong>
+        </div>
+      </aside>
+    </section>
+
+    <section class="split">
+      <div class="panel">
+        <p class="eyebrow">WHY THE SIGN CHANGES</p>
+        <h2>同一产品，为什么一个为正、一个跑输？</h2>
+        <div class="difference-row">
+          <div><span>07/17 价格指数收益</span><b>+3.15%</b></div>
+          <div class="operator">→</div>
+          <div><span>07/17 全收益指数收益</span><b>+4.04%</b></div>
+          <div class="difference">分红处理差异<strong>0.89%</strong></div>
+        </div>
+        <p class="fine">价格指数在成份股除息时自然回落；全收益指数把税前现金分红再投资。红利策略用全收益指数评价，更能避免把分红处理误认为选股Alpha。</p>
+      </div>
+      <div class="panel method">
+        <p class="eyebrow">CALCULATION</p>
+        <h2>这张跟踪表如何计算</h2>
+        <p><b>统一起点</b>：2026-06-30期初，对应前一交易日6/29收盘。000922首个基准日收益因此为-1.92%。</p>
+        <p><b>指数收益</b>：中证红利指数从统一起点到当前的涨跌幅。</p>
+        <p><b>超额收益</b>：产品收益 − 指数收益。两项都统一用百分号表示。</p>
+      </div>
+    </section>
+
+    <section class="panel table-panel">
+      <div class="panel-head table-heading">
+        <div><p class="eyebrow">DAILY DETAIL</p><h2>每日净值与相对表现</h2></div>
+        <div class="table-controls" role="group" aria-label="切换计算口径">
+          <button class="active" type="button" data-mode="economic">经济评价</button>
+          <button type="button" data-mode="reconcile">沟通对账</button>
+        </div>
+      </div>
+      <div class="table-context" id="table-context"></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>日期</th><th>基金净值</th><th>基金日收益</th><th>指数日收益</th>
+              <th>单日超额收益</th><th>基金累计</th><th>指数收益</th><th>超额收益</th>
+            </tr>
+          </thead>
+          <tbody id="daily-table"></tbody>
+        </table>
+      </div>
+      <p class="table-note">* 6/30产品官方日净值尚未取得。0%起点由管理人披露的7/17累计收益+3.95%与净值1.0401反推，仅用于归一化，不作为6/30官方单位净值。7/8之前缺少连续产品净值，因此7/8单日指标留空。</p>
+    </section>
+
+    <footer>仅作净值记录与相对表现核对，不构成投资建议。</footer>
+  </main>
+
+  <script src="./vendor/html2canvas.min.js"></script>
+  <script>
+    (() => {
+      "use strict";
+      const FUND_BASE_NAV = 1.0401 / 1.0395;
+      const PRICE_BASE = 5120.71;
+      const TOTAL_RETURN_BASE = 10943.04;
+      const points = [
+        { date: "06-30 期初", axisLabel: "06-30", nav: FUND_BASE_NAV, priceIndex: PRICE_BASE, totalReturnIndex: TOTAL_RETURN_BASE, inferredAnchor: true },
+        { date: "07-08", axisLabel: "07-08", nav: 1.0315, priceIndex: 5264.79, totalReturnIndex: 11276.44 },
+        { date: "07-09", axisLabel: "07-09", nav: 1.0316, priceIndex: 5200.44, totalReturnIndex: 11138.61 },
+        { date: "07-10", axisLabel: "07-10", nav: 1.0381, priceIndex: 5184.10, totalReturnIndex: 11129.62 },
+        { date: "07-13", axisLabel: "07-13", nav: 1.0324, priceIndex: 5198.11, totalReturnIndex: 11173.97 },
+        { date: "07-14", axisLabel: "07-14", nav: 1.0576, priceIndex: 5307.50, totalReturnIndex: 11409.10 },
+        { date: "07-15", axisLabel: "07-15", nav: 1.0710, priceIndex: 5378.84, totalReturnIndex: 11568.99 },
+        { date: "07-16", axisLabel: "07-16", nav: 1.0589, priceIndex: 5321.07, totalReturnIndex: 11455.85 },
+        { date: "07-17", axisLabel: "07-17", nav: 1.0401, priceIndex: 5281.81, totalReturnIndex: 11385.01 },
+        { date: "07-20", axisLabel: "07-20", nav: 1.0572, priceIndex: 5450.51, totalReturnIndex: 11748.64 },
+        { date: "07-21", axisLabel: "07-21", nav: 1.0490, priceIndex: 5391.09, totalReturnIndex: 11621.15 },
+        { date: "07-22", axisLabel: "07-22", nav: 1.0607, priceIndex: 5452.59, totalReturnIndex: 11760.66 },
+        { date: "07-23", axisLabel: "07-23", nav: 1.0747, priceIndex: 5505.69, totalReturnIndex: 11875.20 }
+      ];
+
+      const pct = value => `${value >= 0 ? "+" : ""}${(value * 100).toFixed(2)}%`;
+      const fundCumulative = point => point.nav / FUND_BASE_NAV - 1;
+      const priceCumulative = point => point.priceIndex / PRICE_BASE - 1;
+      const totalReturnCumulative = point => point.totalReturnIndex / TOTAL_RETURN_BASE - 1;
+      const tone = value => value >= 0 ? "positive" : "negative";
+
+      const rows = points.slice(1).map((point, index) => {
+        const previous = points[index];
+        const fundDaily = point.nav / previous.nav - 1;
+        const priceDaily = point.priceIndex / previous.priceIndex - 1;
+        const totalDaily = point.totalReturnIndex / previous.totalReturnIndex - 1;
+        return {
+          point,
+          hasComparableDailyNav: index > 0,
+          fundDaily,
+          priceDaily,
+          totalDaily,
+          economicDaily: fundDaily - totalDaily,
+          reconcileDaily: fundDaily - priceDaily,
+          fundCum: fundCumulative(point),
+          priceCum: priceCumulative(point),
+          totalCum: totalReturnCumulative(point),
+          economicCum: fundCumulative(point) - totalReturnCumulative(point),
+          reconcileCum: fundCumulative(point) - priceCumulative(point)
+        };
+      });
+
+      const last = points[points.length - 1];
+      const latest = rows[rows.length - 1];
+      const fundCum = fundCumulative(last);
+      const totalCum = totalReturnCumulative(last);
+      const economicCum = fundCum - totalCum;
+      const reconcileCum = fundCum - priceCumulative(last);
+
+      const setMetric = (id, value, fixedClass) => {
+        const element = document.getElementById(id);
+        element.textContent = pct(value);
+        element.className = fixedClass || tone(value);
+      };
+      setMetric("fund-cumulative", fundCum, "teal");
+      setMetric("index-cumulative", totalCum, "orange");
+      setMetric("excess-cumulative", economicCum);
+      setMetric("latest-excess", latest.economicDaily);
+      setMetric("reconcile-cumulative", reconcileCum);
+
+      let tableMode = "economic";
+      const tableBody = document.getElementById("daily-table");
+      const tableContext = document.getElementById("table-context");
+      const renderTable = () => {
+        const economic = tableMode === "economic";
+        tableContext.textContent = economic
+          ? "H00922全收益指数 · 超额收益 = 产品收益 − 指数收益"
+          : "000922价格指数 · 超额收益 = 产品收益 − 指数收益";
+        const baseline = `
+          <tr class="baseline-row">
+            <td>06-30 期初</td><td>推导起点*</td><td>—</td><td>—</td>
+            <td>—</td><td>0.00%</td><td>0.00%</td><td>0.00%</td>
+          </tr>`;
+        const detail = rows.map(row => {
+          const dailyIndex = economic ? row.totalDaily : row.priceDaily;
+          const dailyExcess = economic ? row.economicDaily : row.reconcileDaily;
+          const cumulativeIndex = economic ? row.totalCum : row.priceCum;
+          const cumulativeExcess = economic ? row.economicCum : row.reconcileCum;
+          const dailyFundText = row.hasComparableDailyNav ? pct(row.fundDaily) : "—";
+          const dailyIndexText = row.hasComparableDailyNav ? pct(dailyIndex) : "—";
+          const dailyExcessText = row.hasComparableDailyNav ? pct(dailyExcess) : "—";
+          return `
+            <tr>
+              <td>${row.point.date}</td>
+              <td>${row.point.nav.toFixed(4)}</td>
+              <td>${dailyFundText}</td>
+              <td>${dailyIndexText}</td>
+              <td class="${row.hasComparableDailyNav ? tone(dailyExcess) : ""}">${dailyExcessText}</td>
+              <td>${pct(row.fundCum)}</td>
+              <td>${pct(cumulativeIndex)}</td>
+              <td class="${tone(cumulativeExcess)}">${pct(cumulativeExcess)}</td>
+            </tr>`;
+        }).join("");
+        tableBody.innerHTML = baseline + detail;
+      };
+
+      document.querySelectorAll("[data-mode]").forEach(button => {
+        button.addEventListener("click", () => {
+          tableMode = button.dataset.mode;
+          document.querySelectorAll("[data-mode]").forEach(item => item.classList.toggle("active", item === button));
+          renderTable();
+        });
+      });
+      renderTable();
+
+      const canvas = document.getElementById("trend-chart");
+      const drawChart = () => {
+        const rect = canvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = Math.round(rect.width * dpr);
+        canvas.height = Math.round(rect.height * dpr);
+        const context = canvas.getContext("2d");
+        context.scale(dpr, dpr);
+        const width = rect.width;
+        const height = rect.height;
+        const pad = { left: 50, right: 20, top: 30, bottom: 32 };
+        const fund = points.map(fundCumulative);
+        const total = points.map(totalReturnCumulative);
+        const values = fund.concat(total);
+        const min = Math.min(-0.012, ...values) - 0.008;
+        const max = Math.max(0.01, ...values) + 0.011;
+        const x = index => pad.left + index * (width - pad.left - pad.right) / (points.length - 1);
+        const y = value => pad.top + (max - value) * (height - pad.top - pad.bottom) / (max - min);
+
+        context.clearRect(0, 0, width, height);
+        context.font = '11px Arial, "PingFang SC", sans-serif';
+        context.textAlign = "right";
+        for (let i = 0; i < 6; i += 1) {
+          const value = min + (max - min) * i / 5;
+          const yy = y(value);
+          context.strokeStyle = "#233b51";
+          context.lineWidth = 1;
+          context.setLineDash([3, 5]);
+          context.beginPath();
+          context.moveTo(pad.left, yy);
+          context.lineTo(width - pad.right, yy);
+          context.stroke();
+          context.setLineDash([]);
+          context.fillStyle = "#8da0af";
+          context.fillText(`${(value * 100).toFixed(0)}%`, pad.left - 9, yy + 4);
+        }
+
+        const zero = y(0);
+        context.strokeStyle = "#f5d69a";
+        context.lineWidth = 2.2;
+        context.beginPath();
+        context.moveTo(pad.left, zero);
+        context.lineTo(width - pad.right, zero);
+        context.stroke();
+        context.fillStyle = "#f5d69a";
+        context.textAlign = "left";
+        context.fillText("0% · 2026-06-30期初", pad.left + 8, zero - 9);
+
+        const drawLine = (series, color) => {
+          context.strokeStyle = color;
+          context.lineWidth = 2.7;
+          context.beginPath();
+          series.forEach((value, index) => {
+            if (index === 0) context.moveTo(x(index), y(value));
+            else context.lineTo(x(index), y(value));
+          });
+          context.stroke();
+          series.forEach((value, index) => {
+            context.beginPath();
+            context.fillStyle = "#071525";
+            context.arc(x(index), y(value), index === 0 ? 5.2 : 4.3, 0, Math.PI * 2);
+            context.fill();
+            context.strokeStyle = color;
+            context.lineWidth = 2;
+            context.stroke();
+          });
+        };
+        drawLine(total, "#e6ae67");
+        drawLine(fund, "#55d0c5");
+
+        context.font = '10px Arial, "PingFang SC", sans-serif';
+        context.textAlign = "center";
+        points.forEach((point, index) => {
+          const labelX = Math.max(pad.left + 24, Math.min(x(index), width - pad.right - 24));
+          const labelY = Math.max(14, y(fund[index]) - 13 - index % 2 * 13);
+          context.fillStyle = "#b9f5eb";
+          context.fillText(point.inferredAnchor ? "0%起点*" : point.nav.toFixed(4), labelX, labelY);
+          context.fillStyle = "#8da0af";
+          context.fillText(point.axisLabel, labelX, height - 9);
+        });
+      };
+      drawChart();
+      window.addEventListener("resize", drawChart);
+
+      const exportButton = document.getElementById("export-button");
+      exportButton.addEventListener("click", async () => {
+        const dashboard = document.getElementById("dashboard");
+        const previousText = exportButton.textContent;
+        exportButton.textContent = "正在生成…";
+        exportButton.disabled = true;
+        await document.fonts.ready;
+        const image = await window.html2canvas(dashboard, {
+          backgroundColor: "#061324",
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          width: dashboard.scrollWidth,
+          height: dashboard.scrollHeight,
+          windowWidth: Math.max(1200, dashboard.scrollWidth),
+          ignoreElements: element => element.id === "export-button"
+        });
+        exportButton.disabled = false;
+        exportButton.textContent = previousText;
+        const link = document.createElement("a");
+        link.download = "Davis每日跟踪-2026-07-23.png";
+        link.href = image.toDataURL("image/png");
+        link.click();
+      });
+    })();
+  </script>
+</body>
+</html>
