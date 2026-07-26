@@ -1,0 +1,100 @@
+window.DAVIS_DATA = {
+  "updatedAt": "2026-07-23",
+  "fundBaseNav": 1.0005772005772005,
+  "priceBase": 5120.71,
+  "totalReturnBase": 10943.04,
+  "points": [
+    {
+      "date": "06-30 期初",
+      "axisLabel": "06-30",
+      "nav": 1.0005772005772005,
+      "priceIndex": 5120.71,
+      "totalReturnIndex": 10943.04,
+      "inferredAnchor": true
+    },
+    {
+      "date": "07-08",
+      "axisLabel": "07-08",
+      "nav": 1.0315,
+      "priceIndex": 5264.79,
+      "totalReturnIndex": 11276.44
+    },
+    {
+      "date": "07-09",
+      "axisLabel": "07-09",
+      "nav": 1.0316,
+      "priceIndex": 5200.44,
+      "totalReturnIndex": 11138.61
+    },
+    {
+      "date": "07-10",
+      "axisLabel": "07-10",
+      "nav": 1.0381,
+      "priceIndex": 5184.1,
+      "totalReturnIndex": 11129.62
+    },
+    {
+      "date": "07-13",
+      "axisLabel": "07-13",
+      "nav": 1.0324,
+      "priceIndex": 5198.11,
+      "totalReturnIndex": 11173.97
+    },
+    {
+      "date": "07-14",
+      "axisLabel": "07-14",
+      "nav": 1.0576,
+      "priceIndex": 5307.5,
+      "totalReturnIndex": 11409.1
+    },
+    {
+      "date": "07-15",
+      "axisLabel": "07-15",
+      "nav": 1.071,
+      "priceIndex": 5378.84,
+      "totalReturnIndex": 11568.99
+    },
+    {
+      "date": "07-16",
+      "axisLabel": "07-16",
+      "nav": 1.0589,
+      "priceIndex": 5321.07,
+      "totalReturnIndex": 11455.85
+    },
+    {
+      "date": "07-17",
+      "axisLabel": "07-17",
+      "nav": 1.0401,
+      "priceIndex": 5281.81,
+      "totalReturnIndex": 11385.01
+    },
+    {
+      "date": "07-20",
+      "axisLabel": "07-20",
+      "nav": 1.0572,
+      "priceIndex": 5450.51,
+      "totalReturnIndex": 11748.64
+    },
+    {
+      "date": "07-21",
+      "axisLabel": "07-21",
+      "nav": 1.049,
+      "priceIndex": 5391.09,
+      "totalReturnIndex": 11621.15
+    },
+    {
+      "date": "07-22",
+      "axisLabel": "07-22",
+      "nav": 1.0607,
+      "priceIndex": 5452.59,
+      "totalReturnIndex": 11760.66
+    },
+    {
+      "date": "07-23",
+      "axisLabel": "07-23",
+      "nav": 1.0747,
+      "priceIndex": 5505.69,
+      "totalReturnIndex": 11875.2
+    }
+  ]
+};

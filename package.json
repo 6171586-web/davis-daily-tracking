@@ -1,0 +1,13 @@
+{
+  "name": "davis-daily-tracking",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "update": "node scripts/update-data.mjs"
+  },
+  "dependencies": {
+    "imapflow": "^1.0.195",
+    "mailparser": "^3.7.4"
+  }
+}
