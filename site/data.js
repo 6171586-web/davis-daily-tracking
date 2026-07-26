@@ -1,13 +1,13 @@
 window.DAVIS_DATA = {
   "updatedAt": "2026-07-23",
-  "fundBaseNav": 1.0005772005772005,
+  "fundBaseNav": 1.0009620009620008,
   "priceBase": 5120.71,
   "totalReturnBase": 10943.04,
   "points": [
     {
       "date": "06-30 期初",
       "axisLabel": "06-30",
-      "nav": 1.0005772005772005,
+      "nav": 1.0009620009620008,
       "priceIndex": 5120.71,
       "totalReturnIndex": 10943.04,
       "inferredAnchor": true
@@ -64,7 +64,7 @@ window.DAVIS_DATA = {
     {
       "date": "07-17",
       "axisLabel": "07-17",
-      "nav": 1.0401,
+      "nav": 1.0405,
       "priceIndex": 5281.81,
       "totalReturnIndex": 11385.01
     },
