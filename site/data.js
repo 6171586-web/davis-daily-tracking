@@ -1,6 +1,6 @@
 window.DAVIS_DATA = {
   "updatedAt": "2026-07-24",
-  "lastCheckedAt": "2026-07-27 14:35",
+  "lastCheckedAt": "2026-07-28 00:25",
   "fundBaseNav": 1.0009620009620008,
   "priceBase": 5120.71,
   "totalReturnBase": 10943.04,
