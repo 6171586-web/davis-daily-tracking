@@ -202,7 +202,7 @@ async function fetchOfficialIndex(indexCode, startDate, endDate) {
   const response = await fetch(url, {
     headers: {
       Accept: "application/json",
-      "User-Agent": "DavisDailyTracking/1.0"
+      "User-Agent": "DivisAIDailyTracking/1.0"
     },
     signal: AbortSignal.timeout(30000)
   });
@@ -223,7 +223,7 @@ async function fetchOfficialIndex(indexCode, startDate, endDate) {
 
 function buildSiteData(state) {
   const dates = Object.keys(state.fundNavs)
-    .filter(date => state.priceIndex[date] != null && state.totalReturnIndex[date] != null)
+    .filter(date => state.priceIndex[date] != null)
     .sort();
   if (!dates.length) throw new Error("No complete fund and index observations are available");
 
@@ -233,15 +233,13 @@ function buildSiteData(state) {
       axisLabel: "06-30",
       nav: state.fundBaseNav,
       priceIndex: state.priceBase,
-      totalReturnIndex: state.totalReturnBase,
       inferredAnchor: true
     },
     ...dates.map(date => ({
       date: axisLabel(date),
       axisLabel: axisLabel(date),
       nav: state.fundNavs[date],
-      priceIndex: state.priceIndex[date],
-      totalReturnIndex: state.totalReturnIndex[date]
+      priceIndex: state.priceIndex[date]
     }))
   ];
 
@@ -250,7 +248,6 @@ function buildSiteData(state) {
     lastCheckedAt: state.lastCheckedAt || null,
     fundBaseNav: state.fundBaseNav,
     priceBase: state.priceBase,
-    totalReturnBase: state.totalReturnBase,
     points
   };
 }
@@ -259,10 +256,9 @@ async function main() {
   const state = await readJson(STATE_PATH);
   const today = shanghaiToday();
   const previousPublishedDate = buildSiteData(state).updatedAt;
-  const [mailNavs, priceIndex, totalReturnIndex] = await Promise.all([
+  const [mailNavs, priceIndex] = await Promise.all([
     fetchFundNavs(),
-    fetchOfficialIndex("000922", state.indexBaseDate, today),
-    fetchOfficialIndex("H00922", state.indexBaseDate, today)
+    fetchOfficialIndex("000922", state.indexBaseDate, today)
   ]);
 
   state.fundNavs = {
@@ -271,7 +267,6 @@ async function main() {
     ...state.fundNavOverrides
   };
   state.priceIndex = { ...state.priceIndex, ...priceIndex };
-  state.totalReturnIndex = { ...state.totalReturnIndex, ...totalReturnIndex };
   state.lastCheckedAt = shanghaiNow();
 
   const siteData = buildSiteData(state);
@@ -283,7 +278,7 @@ async function main() {
     state.lastSuccessfulCheckDate = today;
   }
   const stateText = `${JSON.stringify(state, null, 2)}\n`;
-  const siteText = `window.DAVIS_DATA = ${JSON.stringify(siteData, null, 2)};\n`;
+  const siteText = `window.DIVIS_AI_DATA = ${JSON.stringify(siteData, null, 2)};\n`;
   const siteJsonText = `${JSON.stringify(siteData, null, 2)}\n`;
   await fs.writeFile(STATE_PATH, stateText);
   await fs.writeFile(SITE_DATA_PATH, siteText);

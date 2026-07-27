@@ -1,4 +1,4 @@
-name: Deploy Davis daily tracking
+name: Deploy Divis AI daily tracking
 
 on:
   push:

@@ -4,11 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
-  <meta name="description" content="Davis每日跟踪：红利指增2号与中证红利指数收益对比">
-  <meta property="og:title" content="Davis每日跟踪">
+  <meta name="description" content="Divis AI每日跟踪：红利指增2号与000922中证红利指数收益对比">
+  <meta property="og:title" content="Divis AI每日跟踪">
   <meta property="og:description" content="红利指增2号与中证红利指数收益、超额收益跟踪">
   <meta property="og:image" content="https://6171586-web.github.io/davis-daily-tracking/og.png">
-  <title>Davis每日跟踪</title>
+  <title>Divis AI每日跟踪</title>
   <style>
     :root {
       --ink: #f7ead2;
@@ -150,11 +150,11 @@
     .legend .fund { background: var(--teal); }
     .legend .index { background: var(--orange); }
     .trend { width: 100%; height: 390px; display: block; }
-    .reconcile-card {
+    .benchmark-card {
       border-color: #344c60;
       background: linear-gradient(160deg, rgba(19,37,53,.96), rgba(7,21,35,.96));
     }
-    .reconcile-title { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .benchmark-title { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
     .status {
       border: 1px solid #42687c;
       border-radius: 999px;
@@ -318,11 +318,11 @@
     <header>
       <div>
         <p class="eyebrow" id="report-date">PRIVATE PERFORMANCE NOTE · 2026.07.23</p>
-        <h1>Davis每日跟踪</h1>
+        <h1>Divis AI每日跟踪</h1>
         <p class="sub">红利指增2号 · 从2026年6月30日期初统一归零</p>
         <div class="method-strip">
-          <b>经济评价口径</b>
-          <span>H00922 中证红利全收益</span><i></i>
+          <b>对标基准</b>
+          <span>000922 中证红利指数</span><i></i>
           <span>6/29收盘 = 6/30期初</span><i></i>
           <span>指数收益与超额收益</span>
         </div>
@@ -334,11 +334,11 @@
       </div>
     </header>
 
-    <section class="metrics" aria-label="经济评价核心指标">
+    <section class="metrics" aria-label="核心指标">
       <article><span>产品累计收益</span><strong class="teal" id="fund-cumulative"></strong><small>按7/17披露锚点推导</small></article>
-      <article><span>指数收益</span><strong class="orange" id="index-cumulative"></strong><small>H00922 · 包含分红再投资</small></article>
+      <article><span>指数收益</span><strong class="orange" id="index-cumulative"></strong><small>000922 · 中证红利指数</small></article>
       <article class="primary-metric"><span>超额收益</span><strong id="excess-cumulative"></strong><small>产品收益 − 指数收益</small></article>
-      <article><span>最新单日超额收益</span><strong id="latest-excess"></strong><small>07/23 · 产品日收益 − 指数日收益</small></article>
+      <article><span>最新单日超额收益</span><strong id="latest-excess"></strong><small id="latest-excess-caption">最新交易日 · 产品日收益 − 指数日收益</small></article>
     </section>
 
     <section class="hero-grid">
@@ -349,32 +349,32 @@
             <h2>产品收益与指数收益</h2>
             <p class="chart-note">两条曲线从同一0%起点延伸；青绿色点标注每个已取得的基金单位净值。</p>
           </div>
-          <div class="legend"><i class="fund"></i>产品<i class="index"></i>H00922全收益</div>
+          <div class="legend"><i class="fund"></i>产品<i class="index"></i>000922中证红利</div>
         </div>
         <canvas id="trend-chart" class="trend" aria-label="基金收益与中证红利指数收益曲线"></canvas>
       </div>
 
-      <aside class="panel reconcile-card">
-        <div class="reconcile-title">
-          <div><p class="eyebrow">COMMUNICATION CHECK</p><h2>沟通对账口径</h2></div>
-          <span class="status">数字已复现</span>
+      <aside class="panel benchmark-card">
+        <div class="benchmark-title">
+          <div><p class="eyebrow">BENCHMARK CHECK</p><h2>000922基准核对</h2></div>
+          <span class="status">口径已确认</span>
         </div>
-        <p class="muted-copy">采用000922价格指数，仅用于还原管理人披露；是否为合同约定口径仍待确认。</p>
+        <p class="muted-copy">根据管理人确认，产品正式对标000922中证红利指数。整页收益曲线、指数收益和超额收益均按该口径计算。</p>
         <div class="checkpoint">
-          <span>截至07/17</span>
+          <span>截至07/17 · 管理人披露核验</span>
           <dl>
             <div><dt>产品累计</dt><dd class="teal">+3.95%</dd></div>
-            <div><dt>价格指数累计</dt><dd>+3.15%</dd></div>
+            <div><dt>000922指数累计</dt><dd>+3.15%</dd></div>
             <div><dt>超额收益</dt><dd class="teal">+0.80%</dd></div>
           </dl>
         </div>
         <div class="checkpoint current">
-          <span>截至07/23 · 同口径更新</span>
-          <strong id="reconcile-cumulative"></strong>
+          <span id="current-checkpoint-label">截至最新交易日 · 最新超额收益</span>
+          <strong id="benchmark-cumulative"></strong>
         </div>
         <div class="weekly-check">
           <span>07/10 → 07/17 周报核验</span>
-          <b>产品 +0.22%</b><b>价格指数 +1.88%</b>
+          <b>产品 +0.22%</b><b>000922指数 +1.88%</b>
           <strong>超额收益 -1.66%</strong>
         </div>
       </aside>
@@ -382,15 +382,15 @@
 
     <section class="split">
       <div class="panel">
-        <p class="eyebrow">WHY THE SIGN CHANGES</p>
-        <h2>同一产品，为什么一个为正、一个跑输？</h2>
+        <p class="eyebrow">BENCHMARK CONFIRMATION</p>
+        <h2>000922口径与披露数字一致</h2>
         <div class="difference-row">
-          <div><span>07/17 价格指数收益</span><b>+3.15%</b></div>
-          <div class="operator">→</div>
-          <div><span>07/17 全收益指数收益</span><b>+4.04%</b></div>
-          <div class="difference">分红处理差异<strong>0.89%</strong></div>
+          <div><span>07/17 产品累计</span><b>+3.95%</b></div>
+          <div class="operator">−</div>
+          <div><span>07/17 000922指数</span><b>+3.15%</b></div>
+          <div class="difference">披露超额收益<strong>+0.80%</strong></div>
         </div>
-        <p class="fine">价格指数在成份股除息时自然回落；全收益指数把税前现金分红再投资。红利策略用全收益指数评价，更能避免把分红处理误认为选股Alpha。</p>
+        <p class="fine">以6月29日收盘作为6月30日期初，000922指数到7月17日累计上涨3.15%，与管理人披露完全吻合，因此后续统一采用该指数。</p>
       </div>
       <div class="panel method">
         <p class="eyebrow">CALCULATION</p>
@@ -404,12 +404,8 @@
     <section class="panel table-panel">
       <div class="panel-head table-heading">
         <div><p class="eyebrow">DAILY DETAIL</p><h2>每日净值与相对表现</h2></div>
-        <div class="table-controls" role="group" aria-label="切换计算口径">
-          <button class="active" type="button" data-mode="economic">经济评价</button>
-          <button type="button" data-mode="reconcile">沟通对账</button>
-        </div>
       </div>
-      <div class="table-context" id="table-context"></div>
+      <div class="table-context">000922中证红利指数 · 超额收益 = 产品收益 − 指数收益</div>
       <div class="table-wrap">
         <table>
           <thead>
@@ -432,14 +428,13 @@
   <script>
     (() => {
       "use strict";
-      const data = window.DAVIS_DATA;
+      const data = window.DIVIS_AI_DATA;
       if (!data || !Array.isArray(data.points) || data.points.length < 2) {
         document.body.innerHTML = "<p style='padding:2rem;color:#f7ead2'>数据暂时不可用，请稍后刷新。</p>";
         return;
       }
       const FUND_BASE_NAV = data.fundBaseNav;
       const PRICE_BASE = data.priceBase;
-      const TOTAL_RETURN_BASE = data.totalReturnBase;
       const points = data.points;
       const updatedDate = data.updatedAt;
       const updatedParts = updatedDate.split("-");
@@ -447,6 +442,11 @@
         `PRIVATE PERFORMANCE NOTE · ${updatedDate.replaceAll("-", ".")}`;
       document.getElementById("updated-day").textContent =
         `${updatedParts[1]} · ${updatedParts[2]}`;
+      const shortUpdatedDate = `${updatedParts[1]}/${updatedParts[2]}`;
+      document.getElementById("latest-excess-caption").textContent =
+        `${shortUpdatedDate} · 产品日收益 − 指数日收益`;
+      document.getElementById("current-checkpoint-label").textContent =
+        `截至${shortUpdatedDate} · 最新超额收益`;
       document.getElementById("last-checked").textContent = data.lastCheckedAt
         ? data.lastCheckedAt.slice(5).replace("-", "/")
         : "尚未检查";
@@ -454,36 +454,29 @@
       const pct = value => `${value >= 0 ? "+" : ""}${(value * 100).toFixed(2)}%`;
       const fundCumulative = point => point.nav / FUND_BASE_NAV - 1;
       const priceCumulative = point => point.priceIndex / PRICE_BASE - 1;
-      const totalReturnCumulative = point => point.totalReturnIndex / TOTAL_RETURN_BASE - 1;
       const tone = value => value >= 0 ? "positive" : "negative";
 
       const rows = points.slice(1).map((point, index) => {
         const previous = points[index];
         const fundDaily = point.nav / previous.nav - 1;
         const priceDaily = point.priceIndex / previous.priceIndex - 1;
-        const totalDaily = point.totalReturnIndex / previous.totalReturnIndex - 1;
         return {
           point,
           hasComparableDailyNav: index > 0,
           fundDaily,
           priceDaily,
-          totalDaily,
-          economicDaily: fundDaily - totalDaily,
-          reconcileDaily: fundDaily - priceDaily,
+          excessDaily: fundDaily - priceDaily,
           fundCum: fundCumulative(point),
           priceCum: priceCumulative(point),
-          totalCum: totalReturnCumulative(point),
-          economicCum: fundCumulative(point) - totalReturnCumulative(point),
-          reconcileCum: fundCumulative(point) - priceCumulative(point)
+          excessCum: fundCumulative(point) - priceCumulative(point)
         };
       });
 
       const last = points[points.length - 1];
       const latest = rows[rows.length - 1];
       const fundCum = fundCumulative(last);
-      const totalCum = totalReturnCumulative(last);
-      const economicCum = fundCum - totalCum;
-      const reconcileCum = fundCum - priceCumulative(last);
+      const indexCum = priceCumulative(last);
+      const excessCum = fundCum - indexCum;
 
       const setMetric = (id, value, fixedClass) => {
         const element = document.getElementById(id);
@@ -491,54 +484,37 @@
         element.className = fixedClass || tone(value);
       };
       setMetric("fund-cumulative", fundCum, "teal");
-      setMetric("index-cumulative", totalCum, "orange");
-      setMetric("excess-cumulative", economicCum);
-      setMetric("latest-excess", latest.economicDaily);
-      setMetric("reconcile-cumulative", reconcileCum);
+      setMetric("index-cumulative", indexCum, "orange");
+      setMetric("excess-cumulative", excessCum);
+      setMetric("latest-excess", latest.excessDaily);
+      setMetric("benchmark-cumulative", excessCum);
 
-      let tableMode = "economic";
       const tableBody = document.getElementById("daily-table");
-      const tableContext = document.getElementById("table-context");
       const renderTable = () => {
-        const economic = tableMode === "economic";
-        tableContext.textContent = economic
-          ? "H00922全收益指数 · 超额收益 = 产品收益 − 指数收益"
-          : "000922价格指数 · 超额收益 = 产品收益 − 指数收益";
         const baseline = `
           <tr class="baseline-row">
             <td>06-30 期初</td><td>推导起点*</td><td>—</td><td>—</td>
             <td>—</td><td>0.00%</td><td>0.00%</td><td>0.00%</td>
           </tr>`;
         const detail = rows.map(row => {
-          const dailyIndex = economic ? row.totalDaily : row.priceDaily;
-          const dailyExcess = economic ? row.economicDaily : row.reconcileDaily;
-          const cumulativeIndex = economic ? row.totalCum : row.priceCum;
-          const cumulativeExcess = economic ? row.economicCum : row.reconcileCum;
           const dailyFundText = row.hasComparableDailyNav ? pct(row.fundDaily) : "—";
-          const dailyIndexText = row.hasComparableDailyNav ? pct(dailyIndex) : "—";
-          const dailyExcessText = row.hasComparableDailyNav ? pct(dailyExcess) : "—";
+          const dailyIndexText = row.hasComparableDailyNav ? pct(row.priceDaily) : "—";
+          const dailyExcessText = row.hasComparableDailyNav ? pct(row.excessDaily) : "—";
           return `
             <tr>
               <td>${row.point.date}</td>
               <td>${row.point.nav.toFixed(4)}</td>
               <td>${dailyFundText}</td>
               <td>${dailyIndexText}</td>
-              <td class="${row.hasComparableDailyNav ? tone(dailyExcess) : ""}">${dailyExcessText}</td>
+              <td class="${row.hasComparableDailyNav ? tone(row.excessDaily) : ""}">${dailyExcessText}</td>
               <td>${pct(row.fundCum)}</td>
-              <td>${pct(cumulativeIndex)}</td>
-              <td class="${tone(cumulativeExcess)}">${pct(cumulativeExcess)}</td>
+              <td>${pct(row.priceCum)}</td>
+              <td class="${tone(row.excessCum)}">${pct(row.excessCum)}</td>
             </tr>`;
         }).join("");
         tableBody.innerHTML = baseline + detail;
       };
 
-      document.querySelectorAll("[data-mode]").forEach(button => {
-        button.addEventListener("click", () => {
-          tableMode = button.dataset.mode;
-          document.querySelectorAll("[data-mode]").forEach(item => item.classList.toggle("active", item === button));
-          renderTable();
-        });
-      });
       renderTable();
 
       const canvas = document.getElementById("trend-chart");
@@ -553,8 +529,8 @@
         const height = rect.height;
         const pad = { left: 50, right: 20, top: 30, bottom: 32 };
         const fund = points.map(fundCumulative);
-        const total = points.map(totalReturnCumulative);
-        const values = fund.concat(total);
+        const benchmark = points.map(priceCumulative);
+        const values = fund.concat(benchmark);
         const min = Math.min(-0.012, ...values) - 0.008;
         const max = Math.max(0.01, ...values) + 0.011;
         const x = index => pad.left + index * (width - pad.left - pad.right) / (points.length - 1);
@@ -608,7 +584,7 @@
             context.stroke();
           });
         };
-        drawLine(total, "#e6ae67");
+        drawLine(benchmark, "#e6ae67");
         drawLine(fund, "#55d0c5");
 
         context.font = '10px Arial, "PingFang SC", sans-serif';
@@ -616,7 +592,7 @@
         points.forEach((point, index) => {
           const labelX = x(index);
           const fundY = y(fund[index]);
-          const labelAbove = point.inferredAnchor || fund[index] >= total[index];
+          const labelAbove = point.inferredAnchor || fund[index] >= benchmark[index];
           const isLast = index === points.length - 1;
           const labelY = labelAbove
             ? Math.max(14, fundY - (isLast ? 23 : 14) - index % 2 * 2)
@@ -653,7 +629,7 @@
         exportButton.disabled = false;
         exportButton.textContent = previousText;
         const link = document.createElement("a");
-        link.download = `Davis每日跟踪-${updatedDate}.png`;
+        link.download = `Divis-AI每日跟踪-${updatedDate}.png`;
         link.href = image.toDataURL("image/png");
         link.click();
       });
