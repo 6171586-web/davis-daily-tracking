@@ -1,4 +1,4 @@
-window.DAVIS_DATA = {
+{
   "updatedAt": "2026-07-23",
   "lastCheckedAt": "2026-07-27 11:32",
   "fundBaseNav": 1.0009620009620008,
@@ -98,4 +98,4 @@ window.DAVIS_DATA = {
       "totalReturnIndex": 11875.2
     }
   ]
-};
+}

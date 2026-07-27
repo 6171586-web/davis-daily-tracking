@@ -66,7 +66,7 @@
     }
     .method-strip b { color: var(--orange); }
     .method-strip i { width: 3px; height: 3px; border-radius: 50%; background: #547084; }
-    .header-actions { display: flex; gap: 10px; align-items: center; }
+    .header-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
     #export-button {
       border: 1px solid #a77742;
       border-radius: 999px;
@@ -79,6 +79,9 @@
     #export-button:hover, #export-button:focus-visible { background: #17354e; outline: none; }
     #export-button:disabled { cursor: wait; opacity: .7; }
     .badge {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
       border: 1px solid #a77742;
       border-radius: 999px;
       padding: 10px 17px;
@@ -89,6 +92,8 @@
       white-space: nowrap;
     }
     .badge strong { font-size: 17px; letter-spacing: .1em; }
+    .check-badge { border-color: #42687c; }
+    .check-badge strong { font-size: 13px; letter-spacing: .02em; }
     .metrics {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -296,10 +301,12 @@
     }
     @media (max-width: 540px) {
       header, .panel-head { align-items: flex-start; flex-direction: column; }
-      .header-actions { width: 100%; justify-content: space-between; }
+      .header-actions { width: 100%; justify-content: flex-start; }
       .metrics { grid-template-columns: 1fr 1fr; }
       .metrics strong { font-size: 23px; }
-      .badge { display: none; }
+      .badge { padding: 8px 12px; }
+      .badge strong { font-size: 14px; }
+      .check-badge strong { font-size: 12px; }
       .method-strip i { display: none; }
       .legend { white-space: normal; }
       .trend { height: 310px; }
@@ -322,7 +329,8 @@
       </div>
       <div class="header-actions">
         <button id="export-button" type="button">导出一图流</button>
-        <div class="badge">净值更新至<br><strong id="updated-day">07 · 23</strong></div>
+        <div class="badge"><span>净值更新至</span><strong id="updated-day">07 · 23</strong></div>
+        <div class="badge check-badge"><span>上次检查</span><strong id="last-checked">尚未检查</strong></div>
       </div>
     </header>
 
@@ -439,6 +447,9 @@
         `PRIVATE PERFORMANCE NOTE · ${updatedDate.replaceAll("-", ".")}`;
       document.getElementById("updated-day").textContent =
         `${updatedParts[1]} · ${updatedParts[2]}`;
+      document.getElementById("last-checked").textContent = data.lastCheckedAt
+        ? data.lastCheckedAt.slice(5).replace("-", "/")
+        : "尚未检查";
 
       const pct = value => `${value >= 0 ? "+" : ""}${(value * 100).toFixed(2)}%`;
       const fundCumulative = point => point.nav / FUND_BASE_NAV - 1;

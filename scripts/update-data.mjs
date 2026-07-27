@@ -26,6 +26,20 @@ function shanghaiToday() {
   return `${values.year}-${values.month}-${values.day}`;
 }
 
+function shanghaiNow() {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Shanghai",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23"
+  }).formatToParts(new Date());
+  const values = Object.fromEntries(parts.map(part => [part.type, part.value]));
+  return `${values.year}-${values.month}-${values.day} ${values.hour}:${values.minute}`;
+}
+
 function normalizeDate(year, month, day) {
   const value = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
   const parsed = new Date(`${value}T00:00:00Z`);
@@ -233,6 +247,7 @@ function buildSiteData(state) {
 
   return {
     updatedAt: dates.at(-1),
+    lastCheckedAt: state.lastCheckedAt || null,
     fundBaseNav: state.fundBaseNav,
     priceBase: state.priceBase,
     totalReturnBase: state.totalReturnBase,
@@ -257,6 +272,7 @@ async function main() {
   };
   state.priceIndex = { ...state.priceIndex, ...priceIndex };
   state.totalReturnIndex = { ...state.totalReturnIndex, ...totalReturnIndex };
+  state.lastCheckedAt = shanghaiNow();
 
   const siteData = buildSiteData(state);
   const latestMailboxDate = Object.keys(mailNavs).sort().at(-1);
@@ -268,8 +284,10 @@ async function main() {
   }
   const stateText = `${JSON.stringify(state, null, 2)}\n`;
   const siteText = `window.DAVIS_DATA = ${JSON.stringify(siteData, null, 2)};\n`;
+  const siteJsonText = `${JSON.stringify(siteData, null, 2)}\n`;
   await fs.writeFile(STATE_PATH, stateText);
   await fs.writeFile(SITE_DATA_PATH, siteText);
+  await fs.writeFile(path.join(ROOT, "site", "data.json"), siteJsonText);
 
   console.log(`Mailbox valuation dates parsed: ${Object.keys(mailNavs).length}`);
   console.log(`Dashboard published through: ${siteData.updatedAt}`);
