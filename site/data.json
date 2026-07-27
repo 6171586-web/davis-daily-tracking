@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-07-23",
-  "lastCheckedAt": "2026-07-27 11:34",
+  "updatedAt": "2026-07-24",
+  "lastCheckedAt": "2026-07-27 14:35",
   "fundBaseNav": 1.0009620009620008,
   "priceBase": 5120.71,
   "totalReturnBase": 10943.04,
@@ -96,6 +96,13 @@
       "nav": 1.0747,
       "priceIndex": 5505.69,
       "totalReturnIndex": 11875.2
+    },
+    {
+      "date": "07-24",
+      "axisLabel": "07-24",
+      "nav": 1.0538,
+      "priceIndex": 5404.28,
+      "totalReturnIndex": 11666.9
     }
   ]
 }
