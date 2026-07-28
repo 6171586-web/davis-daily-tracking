@@ -1,8 +1,8 @@
 {
   "startDate": "2026-06-30",
   "indexBaseDate": "2026-06-29",
-  "lastSuccessfulCheckDate": "2026-07-27",
-  "lastCheckedAt": "2026-07-28 00:25",
+  "lastSuccessfulCheckDate": "2026-07-28",
+  "lastCheckedAt": "2026-07-28 13:52",
   "fundBaseNav": 1.0009620009620008,
   "priceBase": 5120.71,
   "totalReturnBase": 10943.04,
@@ -19,7 +19,8 @@
     "2026-07-21": 1.049,
     "2026-07-22": 1.0607,
     "2026-07-23": 1.0747,
-    "2026-07-24": 1.0538
+    "2026-07-24": 1.0538,
+    "2026-07-27": 1.0739
   },
   "fundNavOverrides": {},
   "priceIndex": {
