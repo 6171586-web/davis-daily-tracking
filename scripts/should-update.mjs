@@ -21,7 +21,7 @@ const today = `${values.year}-${values.month}-${values.day}`;
 const hour = Number(values.hour);
 const workdays = new Set(["Mon", "Tue", "Wed", "Thu", "Fri"]);
 
-if (!workdays.has(values.weekday) || hour < 11 || hour > 23) {
+if (!workdays.has(values.weekday) || hour < 9 || hour > 23) {
   console.log(
     `Outside Beijing workday check window: ${today} ${values.weekday} ${values.hour}:00`
   );
