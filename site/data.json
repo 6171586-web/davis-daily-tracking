@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-08-14",
-  "lastCheckedAt": "2026-08-17 10:35",
+  "updatedAt": "2026-08-17",
+  "lastCheckedAt": "2026-08-18 10:30",
   "fundBaseNav": 1.0009620009620008,
   "priceBase": 5120.71,
   "points": [
@@ -178,6 +178,12 @@
       "axisLabel": "08-14",
       "nav": 1.0981,
       "priceIndex": 5478.39
+    },
+    {
+      "date": "08-17",
+      "axisLabel": "08-17",
+      "nav": 1.1108,
+      "priceIndex": 5500.06
     }
   ]
 }
