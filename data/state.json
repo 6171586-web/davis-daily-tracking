@@ -39,6 +39,17 @@
     "2026-08-18": 1.0662
   },
   "fundNavOverrides": {},
+  "fundCumulativeNavs": {
+    "2026-08-18": 1.1162
+  },
+  "fundCumulativeNavOverrides": {},
+  "distributions": {
+    "2026-08-18": {
+      "perUnit": 0.05,
+      "method": "reinvest",
+      "performanceFee": 0
+    }
+  },
   "priceIndex": {
     "2026-06-29": 5120.71,
     "2026-07-08": 5264.79,

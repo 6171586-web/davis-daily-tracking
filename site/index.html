@@ -278,6 +278,8 @@
     }
     th:first-child, td:first-child { text-align: left; }
     .baseline-row { background: #10283e; color: #f5d69a; font-weight: 700; }
+    .distribution-row { background: rgba(85, 208, 197, .07); }
+    .distribution-tag { color: var(--teal); font-size: 10px; }
     .table-note { margin: 11px 0 0; color: #788b99; font-size: 11px; line-height: 1.65; }
     footer { margin-top: 22px; color: #71818e; font-size: 11px; text-align: center; }
     @media (max-width: 900px) {
@@ -410,14 +412,14 @@
         <table>
           <thead>
             <tr>
-              <th>日期</th><th>基金净值</th><th>基金日收益</th><th>指数日收益</th>
+              <th>日期</th><th>单位净值</th><th>累计单位净值</th><th>基金日收益</th><th>指数日收益</th>
               <th>单日超额收益</th><th>基金累计</th><th>指数收益</th><th>超额收益</th>
             </tr>
           </thead>
           <tbody id="daily-table"></tbody>
         </table>
       </div>
-      <p class="table-note">* 6/30产品官方日净值尚未取得。0%起点由管理人披露的7/17累计收益+3.95%与正式净值邮件中的单位净值1.0405反推，仅用于归一化，不作为6/30官方单位净值。7/8之前缺少连续产品净值，因此7/8单日指标留空。</p>
+      <p class="table-note">* 6/30产品官方日净值尚未取得。0%起点由管理人披露的7/17累计收益+3.95%与正式净值邮件中的单位净值1.0405反推，仅用于归一化，不作为6/30官方单位净值。7/8之前缺少连续产品净值，因此7/8单日指标留空。8/18每单位分红0.0500，选择红利再投；收益计算采用再投资复权净值，单位净值和邮件累计单位净值仍按原值展示。</p>
     </section>
 
     <footer>仅作净值记录与相对表现核对，不构成投资建议。</footer>
@@ -452,13 +454,14 @@
         : "尚未检查";
 
       const pct = value => `${value >= 0 ? "+" : ""}${(value * 100).toFixed(2)}%`;
-      const fundCumulative = point => point.nav / FUND_BASE_NAV - 1;
+      const returnNav = point => point.returnNav ?? point.nav;
+      const fundCumulative = point => returnNav(point) / FUND_BASE_NAV - 1;
       const priceCumulative = point => point.priceIndex / PRICE_BASE - 1;
       const tone = value => value >= 0 ? "positive" : "negative";
 
       const rows = points.slice(1).map((point, index) => {
         const previous = points[index];
-        const fundDaily = point.nav / previous.nav - 1;
+        const fundDaily = returnNav(point) / returnNav(previous) - 1;
         const priceDaily = point.priceIndex / previous.priceIndex - 1;
         return {
           point,
@@ -493,7 +496,7 @@
       const renderTable = () => {
         const baseline = `
           <tr class="baseline-row">
-            <td>06-30 期初</td><td>推导起点*</td><td>—</td><td>—</td>
+            <td>06-30 期初</td><td>推导起点*</td><td>推导起点*</td><td>—</td><td>—</td>
             <td>—</td><td>0.00%</td><td>0.00%</td><td>0.00%</td>
           </tr>`;
         const detail = rows.map(row => {
@@ -501,9 +504,10 @@
           const dailyIndexText = row.hasComparableDailyNav ? pct(row.priceDaily) : "—";
           const dailyExcessText = row.hasComparableDailyNav ? pct(row.excessDaily) : "—";
           return `
-            <tr>
+            <tr class="${row.point.distributionPerUnit ? "distribution-row" : ""}">
               <td>${row.point.date}</td>
               <td>${row.point.nav.toFixed(4)}</td>
+              <td>${row.point.cumulativeNav?.toFixed(4) ?? "—"}${row.point.distributionPerUnit ? `<br><span class="distribution-tag">每份分红 ${row.point.distributionPerUnit.toFixed(4)}</span>` : ""}</td>
               <td>${dailyFundText}</td>
               <td>${dailyIndexText}</td>
               <td class="${row.hasComparableDailyNav ? tone(row.excessDaily) : ""}">${dailyExcessText}</td>

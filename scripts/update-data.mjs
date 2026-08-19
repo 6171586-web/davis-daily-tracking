@@ -73,7 +73,7 @@ function findValuationDate(text) {
 
 function findUnitNav(text, valuationDate) {
   const patterns = [
-    /(?:基金单位净值|产品单位净值|单位净值|单位\s*NAV)\s*(?:为|是|[：:=])?\s*([0-9]+\.[0-9]{3,8})/ig,
+    /(?:基金单位净值|产品单位净值|(?<!累计)单位净值|单位\s*NAV)[^0-9]{0,24}([0-9]+\.[0-9]{3,8})/ig,
     /(?:基金净值|产品净值)\s*(?:为|是|[：:=])\s*([0-9]+\.[0-9]{3,8})/ig
   ];
   for (const pattern of patterns) {
@@ -98,6 +98,20 @@ function findUnitNav(text, valuationDate) {
         if (value > 0.5 && value < 3) return value;
       }
       offset = text.indexOf(dateText, offset + dateText.length);
+    }
+  }
+  return null;
+}
+
+function findCumulativeUnitNav(text) {
+  const patterns = [
+    /(?:基金累计单位净值|产品累计单位净值|累计单位净值|累计净值)[^0-9]{0,24}([0-9]+\.[0-9]{3,8})/ig,
+    /(?:累计单位\s*NAV|累计\s*NAV)[^0-9]{0,24}([0-9]+\.[0-9]{3,8})/ig
+  ];
+  for (const pattern of patterns) {
+    for (const match of text.matchAll(pattern)) {
+      const value = Number(match[1]);
+      if (value > 0.5 && value < 3) return value;
     }
   }
   return null;
@@ -161,12 +175,14 @@ async function fetchFundNavs() {
         ].join("\n");
         const date = findValuationDate(searchable);
         const nav = date ? findUnitNav(searchable, date) : null;
+        const cumulativeNav = date ? findCumulativeUnitNav(searchable) : null;
         if (!date || nav === null) {
           if (process.env.DEBUG_MAIL === "1") {
             console.log(JSON.stringify({
               subject: mail.subject || "",
               date,
               nav,
+              cumulativeNav,
               excerpt: searchable.replace(/\s+/g, " ").slice(0, 800)
             }));
           }
@@ -176,7 +192,7 @@ async function fetchFundNavs() {
         const receivedAt = message.internalDate?.getTime() || 0;
         const existing = parsedByDate.get(date);
         if (!existing || receivedAt >= existing.receivedAt) {
-          parsedByDate.set(date, { nav, receivedAt });
+          parsedByDate.set(date, { nav, cumulativeNav, receivedAt });
         }
       }
     } finally {
@@ -189,9 +205,16 @@ async function fetchFundNavs() {
   if (process.env.DEBUG_MAIL === "1") {
     console.log(`Mailbox candidates: ${candidateMessages}; sender matches: ${senderMessages}`);
   }
-  return Object.fromEntries(
-    [...parsedByDate.entries()].map(([date, value]) => [date, round(value.nav)])
-  );
+  return {
+    navs: Object.fromEntries(
+      [...parsedByDate.entries()].map(([date, value]) => [date, round(value.nav)])
+    ),
+    cumulativeNavs: Object.fromEntries(
+      [...parsedByDate.entries()]
+        .filter(([, value]) => value.cumulativeNav !== null)
+        .map(([date, value]) => [date, round(value.cumulativeNav)])
+    )
+  };
 }
 
 async function fetchOfficialIndex(indexCode, startDate, endDate) {
@@ -227,20 +250,38 @@ function buildSiteData(state) {
     .sort();
   if (!dates.length) throw new Error("No complete fund and index observations are available");
 
+  let reinvestFactor = 1;
+  let cumulativeCashDistribution = 0;
   const points = [
     {
       date: "06-30 期初",
       axisLabel: "06-30",
       nav: state.fundBaseNav,
+      cumulativeNav: state.fundBaseNav,
+      returnNav: state.fundBaseNav,
       priceIndex: state.priceBase,
       inferredAnchor: true
     },
-    ...dates.map(date => ({
-      date: axisLabel(date),
-      axisLabel: axisLabel(date),
-      nav: state.fundNavs[date],
-      priceIndex: state.priceIndex[date]
-    }))
+    ...dates.map(date => {
+      const nav = state.fundNavs[date];
+      const distribution = state.distributions?.[date];
+      if (distribution) {
+        cumulativeCashDistribution += distribution.perUnit;
+        if (distribution.method === "reinvest") {
+          reinvestFactor *= 1 + distribution.perUnit / nav;
+        }
+      }
+      return {
+        date: distribution ? `${axisLabel(date)} 分红` : axisLabel(date),
+        axisLabel: axisLabel(date),
+        nav,
+        cumulativeNav: state.fundCumulativeNavs?.[date] ?? round(nav + cumulativeCashDistribution),
+        returnNav: round(nav * reinvestFactor),
+        priceIndex: state.priceIndex[date],
+        distributionPerUnit: distribution?.perUnit ?? null,
+        distributionMethod: distribution?.method ?? null
+      };
+    })
   ];
 
   return {
@@ -256,21 +297,26 @@ async function main() {
   const state = await readJson(STATE_PATH);
   const today = shanghaiToday();
   const previousPublishedDate = buildSiteData(state).updatedAt;
-  const [mailNavs, priceIndex] = await Promise.all([
+  const [mailValues, priceIndex] = await Promise.all([
     fetchFundNavs(),
     fetchOfficialIndex("000922", state.indexBaseDate, today)
   ]);
 
   state.fundNavs = {
     ...state.fundNavs,
-    ...mailNavs,
+    ...mailValues.navs,
     ...state.fundNavOverrides
+  };
+  state.fundCumulativeNavs = {
+    ...state.fundCumulativeNavs,
+    ...mailValues.cumulativeNavs,
+    ...state.fundCumulativeNavOverrides
   };
   state.priceIndex = { ...state.priceIndex, ...priceIndex };
   state.lastCheckedAt = shanghaiNow();
 
   const siteData = buildSiteData(state);
-  const latestMailboxDate = Object.keys(mailNavs).sort().at(-1);
+  const latestMailboxDate = Object.keys(mailValues.navs).sort().at(-1);
   if (
     siteData.updatedAt > previousPublishedDate &&
     latestMailboxDate === siteData.updatedAt
@@ -284,7 +330,8 @@ async function main() {
   await fs.writeFile(SITE_DATA_PATH, siteText);
   await fs.writeFile(path.join(ROOT, "site", "data.json"), siteJsonText);
 
-  console.log(`Mailbox valuation dates parsed: ${Object.keys(mailNavs).length}`);
+  console.log(`Mailbox valuation dates parsed: ${Object.keys(mailValues.navs).length}`);
+  console.log(`Cumulative NAV dates parsed: ${Object.keys(mailValues.cumulativeNavs).length}`);
   console.log(`Dashboard published through: ${siteData.updatedAt}`);
   console.log(
     state.lastSuccessfulCheckDate === today
