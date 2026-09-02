@@ -1,6 +1,6 @@
 window.DIVIS_AI_DATA = {
-  "updatedAt": "2026-08-31",
-  "lastCheckedAt": "2026-09-01 13:15",
+  "updatedAt": "2026-09-01",
+  "lastCheckedAt": "2026-09-02 13:52",
   "fundBaseNav": 1.0009620009620008,
   "priceBase": 5120.71,
   "points": [
@@ -400,6 +400,16 @@ window.DIVIS_AI_DATA = {
       "cumulativeNav": 1.14,
       "returnNav": 1.14111611,
       "priceIndex": 5718.42,
+      "distributionPerUnit": null,
+      "distributionMethod": null
+    },
+    {
+      "date": "09-01",
+      "axisLabel": "09-01",
+      "nav": 1.0979,
+      "cumulativeNav": 1.1479,
+      "returnNav": 1.14938659,
+      "priceIndex": 5719.05,
       "distributionPerUnit": null,
       "distributionMethod": null
     }
