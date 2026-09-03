@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-09-01",
-  "lastCheckedAt": "2026-09-02 13:52",
+  "updatedAt": "2026-09-02",
+  "lastCheckedAt": "2026-09-03 13:50",
   "fundBaseNav": 1.0009620009620008,
   "priceBase": 5120.71,
   "points": [
@@ -410,6 +410,16 @@
       "cumulativeNav": 1.1479,
       "returnNav": 1.14938659,
       "priceIndex": 5719.05,
+      "distributionPerUnit": null,
+      "distributionMethod": null
+    },
+    {
+      "date": "09-02",
+      "axisLabel": "09-02",
+      "nav": 1.0799,
+      "cumulativeNav": 1.1299,
+      "returnNav": 1.13054247,
+      "priceIndex": 5634.58,
       "distributionPerUnit": null,
       "distributionMethod": null
     }
