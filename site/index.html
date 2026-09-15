@@ -314,6 +314,7 @@
       .trend { height: 310px; }
     }
   </style>
+  <link rel="stylesheet" href="./mobile.css">
 </head>
 <body>
   <main id="dashboard">
@@ -356,6 +357,53 @@
         <canvas id="trend-chart" class="trend" aria-label="基金收益与中证红利指数收益曲线"></canvas>
       </div>
 
+
+    </section>
+
+
+
+    <a class="mobile-jump" href="#valuation-details">查看净值明细 · 最近优先 ↓</a>
+    <section class="panel table-panel" id="valuation-details">
+      <div class="panel-head table-heading">
+        <div><p class="eyebrow">DAILY DETAIL</p><h2>每日净值与相对表现</h2></div>
+      </div>
+      <div class="table-context">000922中证红利指数 · 超额收益 = 产品收益 − 指数收益</div>
+      <p class="mobile-detail-hint">默认显示最近 7 条净值记录</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>日期</th><th>单位净值</th><th>累计单位净值</th><th>基金日收益</th><th>指数日收益</th>
+              <th>单日超额收益</th><th>基金累计</th><th>指数收益</th><th>超额收益</th>
+            </tr>
+          </thead>
+          <tbody id="daily-table"></tbody>
+        </table>
+      </div>
+      <button class="history-toggle" aria-expanded="false" aria-controls="daily-table" onclick="const expanded=this.getAttribute('aria-expanded')!=='true';this.setAttribute('aria-expanded',expanded);document.getElementById('daily-table').classList.toggle('history-expanded',expanded);this.textContent=expanded?'收起历史 · 只看最近 7 条':'展开全部历史明细';if(!expanded)document.getElementById('valuation-details').scrollIntoView({block:'start'})">展开全部历史明细</button>
+      <p class="table-note">* 6/30产品官方日净值尚未取得。0%起点由管理人披露的7/17累计收益+3.95%与正式净值邮件中的单位净值1.0405反推，仅用于归一化，不作为6/30官方单位净值。7/8之前缺少连续产品净值，因此7/8单日指标留空。8/18每单位分红0.0500，选择红利再投；收益计算采用再投资复权净值，单位净值和邮件累计单位净值仍按原值展示。</p>
+    </section>
+
+    <section class="split">
+      <div class="panel">
+        <p class="eyebrow">BENCHMARK CONFIRMATION</p>
+        <h2>000922口径与披露数字一致</h2>
+        <div class="difference-row">
+          <div><span>07/17 产品累计</span><b>+3.95%</b></div>
+          <div class="operator">−</div>
+          <div><span>07/17 000922指数</span><b>+3.15%</b></div>
+          <div class="difference">披露超额收益<strong>+0.80%</strong></div>
+        </div>
+        <p class="fine">以6月29日收盘作为6月30日期初，000922指数到7月17日累计上涨3.15%，与管理人披露完全吻合，因此后续统一采用该指数。</p>
+      </div>
+      <div class="panel method">
+        <p class="eyebrow">CALCULATION</p>
+        <h2>这张跟踪表如何计算</h2>
+        <p><b>统一起点</b>：2026-06-30期初，对应前一交易日6/29收盘。000922首个基准日收益因此为-1.92%。</p>
+        <p><b>指数收益</b>：中证红利指数从统一起点到当前的涨跌幅。</p>
+        <p><b>超额收益</b>：产品收益 − 指数收益。两项都统一用百分号表示。</p>
+      </div>
+    </section>
       <aside class="panel benchmark-card">
         <div class="benchmark-title">
           <div><p class="eyebrow">BENCHMARK CHECK</p><h2>000922基准核对</h2></div>
@@ -380,48 +428,6 @@
           <strong>超额收益 -1.66%</strong>
         </div>
       </aside>
-    </section>
-
-    <section class="split">
-      <div class="panel">
-        <p class="eyebrow">BENCHMARK CONFIRMATION</p>
-        <h2>000922口径与披露数字一致</h2>
-        <div class="difference-row">
-          <div><span>07/17 产品累计</span><b>+3.95%</b></div>
-          <div class="operator">−</div>
-          <div><span>07/17 000922指数</span><b>+3.15%</b></div>
-          <div class="difference">披露超额收益<strong>+0.80%</strong></div>
-        </div>
-        <p class="fine">以6月29日收盘作为6月30日期初，000922指数到7月17日累计上涨3.15%，与管理人披露完全吻合，因此后续统一采用该指数。</p>
-      </div>
-      <div class="panel method">
-        <p class="eyebrow">CALCULATION</p>
-        <h2>这张跟踪表如何计算</h2>
-        <p><b>统一起点</b>：2026-06-30期初，对应前一交易日6/29收盘。000922首个基准日收益因此为-1.92%。</p>
-        <p><b>指数收益</b>：中证红利指数从统一起点到当前的涨跌幅。</p>
-        <p><b>超额收益</b>：产品收益 − 指数收益。两项都统一用百分号表示。</p>
-      </div>
-    </section>
-
-    <section class="panel table-panel">
-      <div class="panel-head table-heading">
-        <div><p class="eyebrow">DAILY DETAIL</p><h2>每日净值与相对表现</h2></div>
-      </div>
-      <div class="table-context">000922中证红利指数 · 超额收益 = 产品收益 − 指数收益</div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>日期</th><th>单位净值</th><th>累计单位净值</th><th>基金日收益</th><th>指数日收益</th>
-              <th>单日超额收益</th><th>基金累计</th><th>指数收益</th><th>超额收益</th>
-            </tr>
-          </thead>
-          <tbody id="daily-table"></tbody>
-        </table>
-      </div>
-      <p class="table-note">* 6/30产品官方日净值尚未取得。0%起点由管理人披露的7/17累计收益+3.95%与正式净值邮件中的单位净值1.0405反推，仅用于归一化，不作为6/30官方单位净值。7/8之前缺少连续产品净值，因此7/8单日指标留空。8/18每单位分红0.0500，选择红利再投；收益计算采用再投资复权净值，单位净值和邮件累计单位净值仍按原值展示。</p>
-    </section>
-
     <footer>仅作净值记录与相对表现核对，不构成投资建议。</footer>
   </main>
 
@@ -499,7 +505,7 @@
             <td>06-30 期初</td><td>推导起点*</td><td>推导起点*</td><td>—</td><td>—</td>
             <td>—</td><td>0.00%</td><td>0.00%</td><td>0.00%</td>
           </tr>`;
-        const detail = rows.map(row => {
+        const detail = [...rows].reverse().map(row => {
           const dailyFundText = row.hasComparableDailyNav ? pct(row.fundDaily) : "—";
           const dailyIndexText = row.hasComparableDailyNav ? pct(row.priceDaily) : "—";
           const dailyExcessText = row.hasComparableDailyNav ? pct(row.excessDaily) : "—";
@@ -516,7 +522,7 @@
               <td class="${tone(row.excessCum)}">${pct(row.excessCum)}</td>
             </tr>`;
         }).join("");
-        tableBody.innerHTML = baseline + detail;
+        tableBody.innerHTML = detail + baseline;
       };
 
       renderTable();
@@ -594,6 +600,8 @@
         context.font = '10px Arial, "PingFang SC", sans-serif';
         context.textAlign = "center";
         points.forEach((point, index) => {
+          const labelStride = width < 600 ? Math.ceil(points.length / 5) : 1;
+          if (index % labelStride !== 0 && index !== points.length - 1) return;
           const labelX = x(index);
           const fundY = y(fund[index]);
           const labelAbove = point.inferredAnchor || fund[index] >= benchmark[index];
