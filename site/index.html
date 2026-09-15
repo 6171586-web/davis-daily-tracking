@@ -627,9 +627,8 @@
                 fundY + (isLast ? 29 : 21) + index % 2 * 2
               );
           context.fillStyle = "#b9f5eb";
-          const tag = index === last ? (index === highest ? "最新·最高 " : "最新 ") : index === highest ? "最高 " : "转折 ";
           context.textAlign = mobile && isLast ? "right" : mobile && index === highest && last-highest < gap ? "left" : "center";
-          context.fillText(mobile ? tag + (fund[index]*100).toFixed(2) + "%" : (point.inferredAnchor ? "0%起点*" : point.nav.toFixed(4)), mobile ? Math.max(65,Math.min(width-6,labelX)) : labelX, mobile && isLast ? Math.min(height-pad.bottom-5,fundY+24) : labelY);
+          context.fillText(mobile ? (fund[index]*100).toFixed(2) + "%" : (point.inferredAnchor ? "0%起点*" : point.nav.toFixed(4)), mobile ? Math.max(65,Math.min(width-6,labelX)) : labelX, mobile && isLast ? Math.min(height-pad.bottom-5,fundY+24) : labelY);
           context.fillStyle = "#8da0af";
           context.fillText(point.axisLabel, labelX, height - 9);
         });
