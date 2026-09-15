@@ -537,7 +537,8 @@
         context.scale(dpr, dpr);
         const width = rect.width;
         const height = rect.height;
-        const pad = { left: 50, right: 20, top: 30, bottom: 32 };
+        const mobile = window.innerWidth <= 600;
+      const pad = mobile ? { left: 8, right: 28, top: 30, bottom: 32 } : { left: 50, right: 20, top: 30, bottom: 32 };
         const fund = points.map(fundCumulative);
         const benchmark = points.map(priceCumulative);
         const values = fund.concat(benchmark);
@@ -561,7 +562,7 @@
           context.stroke();
           context.setLineDash([]);
           context.fillStyle = "#8da0af";
-          context.fillText(`${(value * 100).toFixed(0)}%`, pad.left - 9, yy + 4);
+          if (!mobile) context.fillText(`${(value * 100).toFixed(0)}%`, pad.left - 9, yy + 4);
         }
 
         const zero = y(0);
@@ -576,7 +577,6 @@
         context.fillText("0% · 2026-06-30期初", pad.left + 8, zero - 9);
 
 
-      const mobile = window.innerWidth <= 600;
       const highest = fund.indexOf(Math.max(...fund));
       const last = fund.length - 1;
       const keyPoints = new Set([highest, last]);
@@ -588,6 +588,37 @@
         if (deviation > strongest) { strongest = deviation; turning = i; }
       }
       if (turning >= 0) keyPoints.add(turning);
+      const occupied = [];
+      const drawMobileLabel = (index) => {
+        const text = (fund[index]*100).toFixed(2)+"%";
+        context.font = '10px Arial, "PingFang SC", sans-serif';
+        const tw = context.measureText(text).width;
+        const right = Math.max(tw+6, x(index)-10);
+        let chosen = null;
+        let best = Infinity;
+        for (const offset of [-22,22,-38,38,-54,54,-72,72]) {
+          const bottom = Math.max(16,Math.min(height-pad.bottom-8,y(fund[index])+offset));
+          const box = {left:right-tw-4,right:right+4,top:bottom-12,bottom:bottom+4};
+          let hits = occupied.filter(b=>b.left<box.right&&b.right>box.left&&b.top<box.bottom&&b.bottom>box.top).length*100;
+          for (const line of [fund,benchmark]) {
+            for(let j=1;j<line.length;j++){
+              if(x(j)<box.left||x(j-1)>box.right) continue;
+              if(Math.min(y(line[j-1]),y(line[j]))<box.bottom+5&&Math.max(y(line[j-1]),y(line[j]))>box.top-5) hits++;
+            }
+          }
+          if(hits<best){best=hits;chosen=box;}
+          if(!hits)break;
+        }
+        if(!chosen)return;
+        occupied.push(chosen);
+        context.save();
+        context.textAlign="right";
+        context.strokeStyle="#0c2032";context.lineWidth=4;context.lineJoin="round";
+        context.strokeText(text,right,chosen.bottom-4);
+        context.fillStyle="#b9f5eb";context.fillText(text,right,chosen.bottom-4);
+        context.restore();
+      };
+
         const drawLine = (series, color) => {
           context.strokeStyle = color;
           context.lineWidth = 2.7;
@@ -628,9 +659,11 @@
               );
           context.fillStyle = "#b9f5eb";
           context.textAlign = mobile && isLast ? "right" : mobile && index === highest && last-highest < gap ? "left" : "center";
-          context.fillText(mobile ? (fund[index]*100).toFixed(2) + "%" : (point.inferredAnchor ? "0%起点*" : point.nav.toFixed(4)), mobile ? Math.max(65,Math.min(width-6,labelX)) : labelX, mobile && isLast ? Math.min(height-pad.bottom-5,fundY+24) : labelY);
+          if (mobile) drawMobileLabel(index);
+          else context.fillText(point.inferredAnchor ? "0%起点*" : point.nav.toFixed(4),labelX,labelY);
           context.fillStyle = "#8da0af";
-          context.fillText(point.axisLabel, labelX, height - 9);
+          context.textAlign = "center";
+          context.fillText(point.axisLabel, mobile ? Math.max(20,labelX) : labelX, height - 9);
         });
       };
       drawChart();
