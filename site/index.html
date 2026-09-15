@@ -575,16 +575,31 @@
         context.textAlign = "left";
         context.fillText("0% · 2026-06-30期初", pad.left + 8, zero - 9);
 
+
+      const mobile = window.innerWidth <= 600;
+      const highest = fund.indexOf(Math.max(...fund));
+      const last = fund.length - 1;
+      const keyPoints = new Set([highest, last]);
+      const gap = Math.max(2, Math.ceil(last * .2));
+      let turning = -1, strongest = -1;
+      for (let i = 1; i < last; i++) {
+        if ([...keyPoints].some(k => Math.abs(i-k) < gap)) continue;
+        const deviation = Math.abs(fund[i] - (fund[0] + (fund[last]-fund[0])*i/last));
+        if (deviation > strongest) { strongest = deviation; turning = i; }
+      }
+      if (turning >= 0) keyPoints.add(turning);
         const drawLine = (series, color) => {
           context.strokeStyle = color;
           context.lineWidth = 2.7;
           context.beginPath();
           series.forEach((value, index) => {
             if (index === 0) context.moveTo(x(index), y(value));
+            else if (mobile) { const mid = (x(index-1)+x(index))/2; context.bezierCurveTo(mid,y(series[index-1]),mid,y(value),x(index),y(value)); }
             else context.lineTo(x(index), y(value));
           });
           context.stroke();
           series.forEach((value, index) => {
+            if (mobile && (series !== fund || !keyPoints.has(index))) return;
             context.beginPath();
             context.fillStyle = "#071525";
             context.arc(x(index), y(value), index === 0 ? 5.2 : 4.3, 0, Math.PI * 2);
@@ -600,8 +615,7 @@
         context.font = '10px Arial, "PingFang SC", sans-serif';
         context.textAlign = "center";
         points.forEach((point, index) => {
-          const labelStride = width < 600 ? Math.ceil(points.length / 5) : 1;
-          if (index % labelStride !== 0 && index !== points.length - 1) return;
+          if (mobile && !keyPoints.has(index)) return;
           const labelX = x(index);
           const fundY = y(fund[index]);
           const labelAbove = point.inferredAnchor || fund[index] >= benchmark[index];
@@ -613,7 +627,9 @@
                 fundY + (isLast ? 29 : 21) + index % 2 * 2
               );
           context.fillStyle = "#b9f5eb";
-          context.fillText(point.inferredAnchor ? "0%起点*" : point.nav.toFixed(4), labelX, labelY);
+          const tag = index === last ? (index === highest ? "最新·最高 " : "最新 ") : index === highest ? "最高 " : "转折 ";
+          context.textAlign = mobile && isLast ? "right" : mobile && index === highest && last-highest < gap ? "left" : "center";
+          context.fillText(mobile ? tag + (fund[index]*100).toFixed(2) + "%" : (point.inferredAnchor ? "0%起点*" : point.nav.toFixed(4)), mobile ? Math.max(65,Math.min(width-6,labelX)) : labelX, mobile && isLast ? Math.min(height-pad.bottom-5,fundY+24) : labelY);
           context.fillStyle = "#8da0af";
           context.fillText(point.axisLabel, labelX, height - 9);
         });
