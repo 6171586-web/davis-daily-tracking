@@ -67,17 +67,6 @@
     .method-strip b { color: var(--orange); }
     .method-strip i { width: 3px; height: 3px; border-radius: 50%; background: #547084; }
     .header-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-    #export-button {
-      border: 1px solid #a77742;
-      border-radius: 999px;
-      padding: 11px 16px;
-      background: #10283e;
-      color: var(--ink);
-      font-weight: 700;
-      cursor: pointer;
-    }
-    #export-button:hover, #export-button:focus-visible { background: #17354e; outline: none; }
-    #export-button:disabled { cursor: wait; opacity: .7; }
     .badge {
       display: flex;
       align-items: baseline;
@@ -331,7 +320,6 @@
         </div>
       </div>
       <div class="header-actions">
-        <button id="export-button" type="button">导出一图流</button>
         <div class="badge"><span>净值更新至</span><strong id="updated-day">07 · 23</strong></div>
         <div class="badge check-badge"><span>上次检查</span><strong id="last-checked">尚未检查</strong></div>
       </div>
@@ -432,7 +420,6 @@
   </main>
 
   <script src="./data.js"></script>
-  <script src="./vendor/html2canvas.min.js"></script>
   <script>
     (() => {
       "use strict";
@@ -669,30 +656,6 @@
       drawChart();
       window.addEventListener("resize", drawChart);
 
-      const exportButton = document.getElementById("export-button");
-      exportButton.addEventListener("click", async () => {
-        const dashboard = document.getElementById("dashboard");
-        const previousText = exportButton.textContent;
-        exportButton.textContent = "正在生成…";
-        exportButton.disabled = true;
-        await document.fonts.ready;
-        const image = await window.html2canvas(dashboard, {
-          backgroundColor: "#061324",
-          scale: 2,
-          useCORS: true,
-          logging: false,
-          width: dashboard.scrollWidth,
-          height: dashboard.scrollHeight,
-          windowWidth: Math.max(1200, dashboard.scrollWidth),
-          ignoreElements: element => element.id === "export-button"
-        });
-        exportButton.disabled = false;
-        exportButton.textContent = previousText;
-        const link = document.createElement("a");
-        link.download = `Divis-AI每日跟踪-${updatedDate}.png`;
-        link.href = image.toDataURL("image/png");
-        link.click();
-      });
     })();
   </script>
 </body>
