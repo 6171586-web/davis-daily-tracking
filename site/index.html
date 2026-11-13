@@ -316,6 +316,7 @@
       <div class="header-actions">
         <div class="badge"><span>净值更新至</span><strong id="updated-day">07 · 23</strong></div>
         <div class="badge check-badge"><span>上次检查</span><strong id="last-checked">尚未检查</strong></div>
+        <p id="pending-index" hidden style="font-size:13px;color:#65716b;line-height:1.6"></p>
       </div>
     </header>
 
@@ -433,6 +434,11 @@
       const PRICE_BASE = data.priceBase;
       const points = data.points;
       const updatedDate = data.updatedAt;
+      const pendingIndex = document.getElementById("pending-index");
+      if (data.latestReceivedNavDate > updatedDate) {
+        pendingIndex.hidden = false;
+        pendingIndex.textContent = data.latestReceivedNavDate + " 净值已收到，等待中证红利同日收盘数据。";
+      }
       const updatedParts = updatedDate.split("-");
       document.getElementById("report-date").textContent =
         `PRIVATE PERFORMANCE NOTE · ${updatedDate.replaceAll("-", ".")}`;
